@@ -10,6 +10,7 @@ import threading
 import time
 
 import grpc
+
 from coolercontrol.device_service.v1 import (
     custom_function_one_pb2,
     device_service_pb2_grpc,
@@ -48,14 +49,16 @@ MAX_IMAGE_SIZE_BYTES = 2 * 1024 * 1024
 
 
 class ZalmanDeviceService(device_service_pb2_grpc.DeviceServiceServicer):
-    def __init__(self, stop_event: threading.Event):
+    def __init__(self, stop_event: threading.Event) -> None:
         self._stop_event = stop_event
         self._started = time.monotonic()
         self._client = LcdClient()
 
     # --- lifecycle -------------------------------------------------------
 
-    def Health(self, request, context):
+    def Health(
+        self, request: health_pb2.HealthRequest, context: grpc.ServicerContext
+    ) -> health_pb2.HealthResponse:
         status = (
             health_pb2.HealthResponse.STATUS_OK
             if find_tty() is not None
@@ -68,7 +71,9 @@ class ZalmanDeviceService(device_service_pb2_grpc.DeviceServiceServicer):
             uptime_seconds=int(time.monotonic() - self._started),
         )
 
-    def ListDevices(self, request, context):
+    def ListDevices(
+        self, request: list_devices_pb2.ListDevicesRequest, context: grpc.ServicerContext
+    ) -> list_devices_pb2.ListDevicesResponse:
         tty = find_tty()
         if tty is None:
             _LOG.warning("Zalman LCD not present; reporting no devices")
@@ -92,9 +97,7 @@ class ZalmanDeviceService(device_service_pb2_grpc.DeviceServiceServicer):
             name="Zalman ALPHA2 LCD",
             uid_info="usb-0483:5740-HWCX-TECH_USB_Display",
             info=device_info_pb2.DeviceInfo(
-                channels={
-                    CHANNEL_ID: channel_info_pb2.ChannelInfo(label="LCD", lcd_info=lcd_info)
-                },
+                channels={CHANNEL_ID: channel_info_pb2.ChannelInfo(label="LCD", lcd_info=lcd_info)},
                 model="Zalman ALPHA2 DS LCD Display",
                 driver_info=driver_info_pb2.DriverInfo(
                     name="zalman_lcd (cdc_acm)",
@@ -105,26 +108,34 @@ class ZalmanDeviceService(device_service_pb2_grpc.DeviceServiceServicer):
         )
         return list_devices_pb2.ListDevicesResponse(devices=[device])
 
-    def InitializeDevice(self, request, context):
+    def InitializeDevice(
+        self, request: initialize_device_pb2.InitializeDeviceRequest, context: grpc.ServicerContext
+    ) -> initialize_device_pb2.InitializeDeviceResponse:
         self._check_device(request.device_id, context)
         # Also called after resume: drop any stale serial handle so the next
         # command reconnects and re-wakes the panel.
         self._client.close()
         return initialize_device_pb2.InitializeDeviceResponse()
 
-    def Shutdown(self, request, context):
+    def Shutdown(
+        self, request: shutdown_pb2.ShutdownRequest | None, context: grpc.ServicerContext | None
+    ) -> shutdown_pb2.ShutdownResponse:
         _LOG.info("Shutdown requested by CoolerControl")
         self._client.close()
         self._stop_event.set()
         return shutdown_pb2.ShutdownResponse()
 
-    def Status(self, request, context):
+    def Status(
+        self, request: status_pb2.StatusRequest, context: grpc.ServicerContext
+    ) -> status_pb2.StatusResponse:
         self._check_device(request.device_id, context)
         return status_pb2.StatusResponse()
 
     # --- LCD -------------------------------------------------------------
 
-    def Lcd(self, request, context):
+    def Lcd(
+        self, request: lcd_pb2.LcdRequest, context: grpc.ServicerContext
+    ) -> lcd_pb2.LcdResponse:
         self._check_device(request.device_id, context)
         self._check_channel(request.channel_id, context)
         setting = request.setting
@@ -148,41 +159,57 @@ class ZalmanDeviceService(device_service_pb2_grpc.DeviceServiceServicer):
             context.abort(grpc.StatusCode.UNAVAILABLE, f"LCD update failed: {err}")
         return lcd_pb2.LcdResponse()
 
-    def ResetChannel(self, request, context):
+    def ResetChannel(
+        self, request: reset_channel_pb2.ResetChannelRequest, context: grpc.ServicerContext
+    ) -> reset_channel_pb2.ResetChannelResponse:
         self._check_device(request.device_id, context)
         self._check_channel(request.channel_id, context)
         return reset_channel_pb2.ResetChannelResponse()
 
     # --- unsupported channel types ---------------------------------------
 
-    def EnableManualFanControl(self, request, context):
+    def EnableManualFanControl(
+        self,
+        request: enable_manual_fan_control_pb2.EnableManualFanControlRequest,
+        context: grpc.ServicerContext,
+    ) -> enable_manual_fan_control_pb2.EnableManualFanControlResponse:
         context.abort(grpc.StatusCode.UNIMPLEMENTED, "No fan channels")
         return enable_manual_fan_control_pb2.EnableManualFanControlResponse()
 
-    def FixedDuty(self, request, context):
+    def FixedDuty(
+        self, request: fixed_duty_pb2.FixedDutyRequest, context: grpc.ServicerContext
+    ) -> fixed_duty_pb2.FixedDutyResponse:
         context.abort(grpc.StatusCode.UNIMPLEMENTED, "No fan channels")
         return fixed_duty_pb2.FixedDutyResponse()
 
-    def SpeedProfile(self, request, context):
+    def SpeedProfile(
+        self, request: speed_profile_pb2.SpeedProfileRequest, context: grpc.ServicerContext
+    ) -> speed_profile_pb2.SpeedProfileResponse:
         context.abort(grpc.StatusCode.UNIMPLEMENTED, "No fan channels")
         return speed_profile_pb2.SpeedProfileResponse()
 
-    def Lighting(self, request, context):
+    def Lighting(
+        self, request: lighting_pb2.LightingRequest, context: grpc.ServicerContext
+    ) -> lighting_pb2.LightingResponse:
         context.abort(grpc.StatusCode.UNIMPLEMENTED, "No lighting channels")
         return lighting_pb2.LightingResponse()
 
-    def CustomFunctionOne(self, request, context):
+    def CustomFunctionOne(
+        self,
+        request: custom_function_one_pb2.CustomFunctionOneRequest,
+        context: grpc.ServicerContext,
+    ) -> custom_function_one_pb2.CustomFunctionOneResponse:
         context.abort(grpc.StatusCode.UNIMPLEMENTED, "Not supported")
         return custom_function_one_pb2.CustomFunctionOneResponse()
 
     # --- helpers ---------------------------------------------------------
 
     @staticmethod
-    def _check_device(device_id, context):
+    def _check_device(device_id: str, context: grpc.ServicerContext) -> None:
         if device_id != DEVICE_ID:
             context.abort(grpc.StatusCode.NOT_FOUND, f"Unknown device: {device_id}")
 
     @staticmethod
-    def _check_channel(channel_id, context):
+    def _check_channel(channel_id: str, context: grpc.ServicerContext) -> None:
         if channel_id != CHANNEL_ID:
             context.abort(grpc.StatusCode.NOT_FOUND, f"Unknown channel: {channel_id}")
