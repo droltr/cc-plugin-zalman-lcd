@@ -1,0 +1,3 @@
+Vendored from https://gitlab.com/coolercontrol/cc-plugins (GPL-3.0)
+commit 7e65da8c17640176c210c5deb5513f88159bba1e (2026-09-25)
+Regenerate stubs: python -m grpc_tools.protoc -Iproto --python_out=zalman_cc_plugin/gen --grpc_python_out=zalman_cc_plugin/gen $(find proto -name '*.proto')

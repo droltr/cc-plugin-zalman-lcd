@@ -1,0 +1,11 @@
+# CoolerControl device service: Zalman ALPHA2 DS LCD (0483:5740, cdc_acm)
+id = "zalman-lcd"
+type = "device"
+version = "0.1.1"
+url = "https://github.com/droltr/zalman-Alpha2-DS-LCD-Linux"
+description = "Zalman ALPHA2 DS 320x320 LCD via the zalman_lcd driver."
+address = "/run/coolercontrol-plugin-zalman-lcd.sock"
+executable = "/var/lib/coolercontrol/plugins/zalman-lcd/run.sh"
+args = ["--socket", "/run/coolercontrol-plugin-zalman-lcd.sock"]
+# Root is needed to open /dev/ttyACM0 (root:dialout) without a udev rule.
+privileged = true
