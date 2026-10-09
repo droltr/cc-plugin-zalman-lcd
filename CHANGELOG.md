@@ -6,9 +6,16 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
-### Added
+## [0.1.2] - 2026-10-09
+
+### Fixed
+- `manifest.toml` homepage URL now points to this repository (it pointed to the driver).
+
+### Changed
 - Type hints for all gRPC handlers; ruff configuration in `pyproject.toml`.
-- Project docs: `CHANGELOG.md`, `coding.md`, `.claudeignore`.
+
+### Added
+- Project docs: `CHANGELOG.md`, `coding.md`, `.claudeignore`, `docs/upstream.md`.
 
 ## [0.1.1] - 2026-10-09
 
@@ -28,5 +35,6 @@ All notable changes to this project are documented here. The format follows
 
 Verified on Bazzite 44 with CoolerControl 5.0.1 and CoolerDash 3.3.5.
 
-[Unreleased]: https://github.com/droltr/cc-plugin-zalman-lcd/compare/v0.1.1...HEAD
+[Unreleased]: https://github.com/droltr/cc-plugin-zalman-lcd/compare/v0.1.2...HEAD
+[0.1.2]: https://github.com/droltr/cc-plugin-zalman-lcd/compare/v0.1.1...v0.1.2
 [0.1.1]: https://github.com/droltr/cc-plugin-zalman-lcd/releases/tag/v0.1.1
