@@ -1,7 +1,7 @@
 # CoolerControl device service: Zalman ALPHA2 DS LCD (0483:5740, cdc_acm)
 id = "zalman-lcd"
 type = "device"
-version = "0.1.1"
+version = "0.1.2"
 url = "https://github.com/droltr/cc-plugin-zalman-lcd"
 description = "Zalman ALPHA2 DS 320x320 LCD via the zalman_lcd driver."
 address = "/run/coolercontrol-plugin-zalman-lcd.sock"
