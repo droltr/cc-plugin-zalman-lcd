@@ -2,7 +2,7 @@
 id = "zalman-lcd"
 type = "device"
 version = "0.1.1"
-url = "https://github.com/droltr/zalman-Alpha2-DS-LCD-Linux"
+url = "https://github.com/droltr/cc-plugin-zalman-lcd"
 description = "Zalman ALPHA2 DS 320x320 LCD via the zalman_lcd driver."
 address = "/run/coolercontrol-plugin-zalman-lcd.sock"
 executable = "/var/lib/coolercontrol/plugins/zalman-lcd/run.sh"
