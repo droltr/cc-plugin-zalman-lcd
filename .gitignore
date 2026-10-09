@@ -1,2 +1,7 @@
 __pycache__/
 *.pyc
+.venv/
+.ruff_cache/
+
+# Soft-deleted files (see coding.md)
+.deleted/

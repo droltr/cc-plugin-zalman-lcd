@@ -1,0 +1,17 @@
+# Dependencies and caches
+__pycache__/
+.venv/
+venv/
+.ruff_cache/
+
+# Generated gRPC code (regenerate from proto/, do not edit)
+zalman_cc_plugin/gen/
+
+# Soft-deleted files
+.deleted/
+
+# Git internals
+.git/
+
+# Logs
+*.log

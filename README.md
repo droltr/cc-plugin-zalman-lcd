@@ -59,6 +59,10 @@ The protos under `proto/` are vendored from
 [cc-plugins](https://gitlab.com/coolercontrol/cc-plugins); see `proto/SOURCE`
 for the commit and the command that regenerates `zalman_cc_plugin/gen/`.
 
+## Upstream status
+
+What we found in CoolerControl, CoolerDash and the driver, and what we would ask of them: [docs/upstream.md](docs/upstream.md).
+
 ## Known issue (CoolerControl 5.0.1)
 
 CoolerControl's UI cannot apply images to plugin LCDs. The daemon tags every

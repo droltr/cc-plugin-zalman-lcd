@@ -13,19 +13,30 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent / "gen"))
 
 import grpc  # noqa: E402
+
 from coolercontrol.device_service.v1 import device_service_pb2_grpc  # noqa: E402
 
 from .service import ZalmanDeviceService  # noqa: E402
 
 # CoolerControl passes its own log level in CC_LOG (ERROR/WARN/INFO/DEBUG/TRACE).
-_LEVELS = {"ERROR": logging.ERROR, "WARN": logging.WARNING, "INFO": logging.INFO,
-           "DEBUG": logging.DEBUG, "TRACE": logging.DEBUG}
+_LEVELS = {
+    "ERROR": logging.ERROR,
+    "WARN": logging.WARNING,
+    "INFO": logging.INFO,
+    "DEBUG": logging.DEBUG,
+    "TRACE": logging.DEBUG,
+}
 
 
-def main():
-    parser = argparse.ArgumentParser(description="CoolerControl device service for the Zalman ALPHA2 LCD")
-    parser.add_argument("--socket", default="/run/coolercontrol-plugin-zalman-lcd.sock",
-                        help="Unix socket path to listen on (must match manifest address)")
+def main() -> None:
+    parser = argparse.ArgumentParser(
+        description="CoolerControl device service for the Zalman ALPHA2 LCD"
+    )
+    parser.add_argument(
+        "--socket",
+        default="/run/coolercontrol-plugin-zalman-lcd.sock",
+        help="Unix socket path to listen on (must match manifest address)",
+    )
     args = parser.parse_args()
 
     logging.basicConfig(

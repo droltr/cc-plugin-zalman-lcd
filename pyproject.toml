@@ -1,0 +1,16 @@
+[project]
+name = "cc-plugin-zalman-lcd"
+dynamic = ["version"]
+description = "CoolerControl device service plugin for the Zalman ALPHA2 DS LCD"
+license = "GPL-3.0-or-later"
+requires-python = ">=3.10"
+
+[tool.ruff]
+line-length = 100
+extend-exclude = ["zalman_cc_plugin/gen"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["zalman_cc_plugin", "zalman_lcd", "coolercontrol"]
