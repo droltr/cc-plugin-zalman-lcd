@@ -88,6 +88,20 @@ and the dashboard fills the panel.
    ServicePlugin devices that expose no `lcd_info`. Alternatively, document the allowlist.
 3. Optionally, add a config option to force the display shape.
 
+### More fixes found on 2026-10-09 (fork branch `zalman-alpha2-profile`)
+
+Both changes are in [droltr/coolerdash](https://github.com/droltr/coolerdash/tree/zalman-alpha2-profile),
+verified on this machine.
+
+- **CPU fan RPM source** (`2298b5f`): the RPM under CPU (Split and Circle) is hard-wired to the first
+  Liquidctl RPM sensor, so it stays empty when the AIO is wired to motherboard fan headers.
+  New `display.cpu_rpm_sensor` (`"device_uid:sensor name"`, e.g. a motherboard `fan1 RPM`) with a
+  selector in the plugin page; empty keeps the old behaviour.
+- **Integrated plus discrete GPU** (`f76355e`): with an iGPU (AMD Raphael `amdgpu`) listed before the
+  discrete card, the legacy `gpu` slot showed the iGPU temperature, load and power, while the RPM came
+  from the discrete card. Fix: prefer the GPU that reports fan RPM for all GPU values; fall back to the
+  first GPU.
+
 ### How sure we are
 - Profile: fairly high for this panel, but it is one unit on one machine.
   `0x0483:0x5740` is a generic STMicroelectronics CDC ID, so the name tokens matter
